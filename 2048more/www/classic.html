@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="format-detection" content="telephone=no" />
+	<title>2048more</title>
+	<link href="css/2048-icons.css" rel="stylesheet">
+	<style>
+	html {
+		width: 100%;
+		height: 100%;
+	}
+	body {
+		font-family: Arial, sans-serif;
+		text-align: center;
+		background: #F2CA80;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+		min-width: 320px;
+		color: #fff;
+		overflow: hidden
+	}
+	h1 {
+		text-shadow: 0px 0px 4px rgba(0,0,0,0.3);
+		text-transform: uppercase
+	}
+	p {
+		font-size: 1.5em;
+		font-weight: bold;
+		text-shadow: 0px 0px 4px rgba(0,0,0,0.3);
+		text-transform: uppercase
+	}
+	a {
+		color: #fff
+	}
+	*, *:before, *:after {
+	    -moz-box-sizing: border-box;
+	    -webkit-box-sizing: border-box;
+	    -ms-box-sizing: border-box;
+	    box-sizing: border-box;
+	    -webkit-touch-callout: none;
+		-webkit-user-select: none;
+		outline: none;
+		-webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+	}
+	.clear { 
+		clear: both; 
+		font-size: 0.1px; 
+		height: 0.1px; 
+		line-height: 0.1px; 
+		padding: 0!important
+	}
+	
+	.info-bar {
+		width: 90%;
+		margin: 20px auto;
+		z-index: 3;
+		position: relative
+	}
+	.info-bar > div {
+		background: #BF9D73;
+		color: #fff;
+		padding: 10px 15px;
+		border-radius: 6px;
+		box-shadow: 0px 6px 0px #907857;
+		font-size: 0.8em;
+		text-transform: uppercase
+	}
+	.info-bar > div > span {
+		font-weight: bold;
+		font-size: 1.8em;
+		position: relative
+	}
+	
+	.score-clone {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		transition: all 1s ease
+	}
+	.score-clone.hide {
+		bottom: 100px;
+		opacity: 0
+	}
+	.info-bar .score {
+		float: left;
+		margin-right: 10px
+	}
+	.info-bar .highscore {
+		float: left
+	}
+	.info-bar .settings {
+		float: right;
+		background: transparent;
+		font-size: 2em;
+		padding: 0;
+		box-shadow: none
+	}
+	
+	.display {
+		margin: 0 auto;
+		border: 5px solid #BF9D73;
+		width: 90%;
+		position: relative;
+		background: #BF9D73;
+		border-radius: 12px;
+		box-shadow: 0px 6px 0px #907857;
+	}
+	
+	.wipe {
+		bottom: 0;
+	    position: absolute;
+	    top: 0;
+	    width: 100%;
+	    z-index: 2;
+	}
+	
+	.win-overlay,
+	.lose-overlay {
+		background: rgba(242,202,128,0.9);
+	    bottom: 0;
+	    position: absolute;
+	    z-index: 9;
+	    top: 0;
+	    width: 100%;
+	    display: none
+	}
+	
+	.button {
+		background: #BF9D73;
+		color: #fff;
+		padding: 10px 15px;
+		font-weight: bold;
+		width: 90%;
+		display: block;
+		text-decoration: none;
+		border-radius: 6px;
+		box-shadow: 0px 6px 0px #907857;
+		font-size: 2em;
+		text-align: center;
+		text-transform: uppercase;
+		margin: 0 5% 25px;
+		position: relative;
+		top: 0;
+		text-shadow: 0px 0px 4px rgba(0,0,0,0.3);
+		transition: all .125s ease;
+		-moz-transition: all .125s ease;
+		-webkit-transition: all .125s ease;
+		-ms-transition: all .125s ease
+	}
+	
+	.button-red {
+		background: #ac383b;
+		box-shadow: 0 6px 0 #732624;
+		color: #fff;
+		padding: 10px 15px;
+		font-weight: bold;
+		width: 90%;
+		display: block;
+		text-decoration: none;
+		border-radius: 6px;
+		font-size: 2em;
+		text-align: center;
+		text-transform: uppercase;
+		margin: 0 5% 25px;
+		position: relative;
+		top: 0;
+		text-shadow: 0px 0px 4px rgba(0,0,0,0.3);
+		transition: all .125s ease;
+		-moz-transition: all .125s ease;
+		-webkit-transition: all .125s ease;
+		-ms-transition: all .125s ease
+	}
+	
+	.button:hover {
+		position: relative;
+		top: 6px;
+		box-shadow: 0px 0px 0px black
+	}
+	
+	.square {
+		border: 5px solid #BF9D73;
+		float: left;
+		height: 100%
+	}
+	img.dummy {
+		width: 100%;
+		height: auto;
+		display: block
+	}
+	.square img.dummy {
+		background: #F2CA80;
+		border-radius: 8px
+	}
+	.display [class*='square-'] {
+		position: absolute;
+		z-index: 0;
+		-moz-transition: all .25s ease;
+		-webkit-transition: all .25s ease;
+		-ms-transition: all .25s ease;
+		transition: all .25s ease
+	}
+	.display [class*='square-'] .padding {
+		position: absolute;
+		padding: 5px;
+		width: 100%;
+		height: 100%
+	}
+	.display [class*='square-'] span {
+		background: #8C2E2E;
+		box-shadow: 0px 6px 0px #5f1e1b;
+		margin-top: -6px;
+	    display: block;
+	    padding-top: 10%;
+	    font-weight: bold;
+	    font-size: 2.5em;
+	    height: 100%;
+	    left: 0;
+	    color: #fff;
+	    border-radius: 8px;
+	    -moz-transition: all .075s ease;
+	    -webkit-transition: all .075s ease;
+	    -ms-transition: all .075s ease;
+	    transition: all .075s ease;
+	}
+	.display [class*='square-'].add span {
+		-webkit-transform: scale(1.2);
+		-moz-transform: scale(1.2);
+		-ms-transform: scale(1.2);
+		transform: scale(1.2)
+	}
+	.display [class*='square-'].new span {
+		opacity: 0;
+		-moz-transform: scale(0.8);
+		-webkit-transform: scale(0.8);
+		-ms-transform: scale(0.8);
+		transform: scale(0.8);
+	}
+	.display [class*='square-'][data-length='3'] span{
+		font-size: 1.8em;
+		padding-top: 22%
+	}
+	.display [class*='square-'][data-length='4'] span{
+		font-size: 1.3em;
+		padding-top: 29%
+	}
+	.display [class*='square-'][data-length='5'] span{
+		font-size: 1.3em;
+		padding-top: 29%
+	}
+	.display [class*='square-'][data-length='6'] span,
+	.display [class*='square-'][data-length='7'] span {
+		font-size: 0.9em;
+		padding-top: 32%
+	}
+	.square-0 {
+		left: 0%;
+		top: 0%
+	}
+	.square-1 {
+		left: 25%;
+		top: 0%
+	}
+	.square-2 {
+		left: 50%;
+		top: 0%
+	}
+	.square-3 {
+		left: 75%;
+		top: 0%
+	}
+	.square-4 {
+		left: 0%;
+		top: 25%
+	}
+	.square-5 {
+		left: 25%;
+		top: 25%
+	}
+	.square-6 {
+		left: 50%;
+		top: 25%
+	}
+	.square-7 {
+		left: 75%;
+		top: 25%
+	}
+	.square-8 {
+		left: 0%;
+		top: 50%
+	}
+	.square-9 {
+		left: 25%;
+		top: 50%
+	}
+	.square-10 {
+		left: 50%;
+		top: 50%
+	}
+	.square-11 {
+		left: 75%;
+		top: 50%
+	}
+	.square-12 {
+		left: 0%;
+		top: 75%
+	}
+	.square-13 {
+		left: 25%;
+		top: 75%
+	}
+	.square-14 {
+		left: 50%;
+		top: 75%
+	}
+	.square-15 {
+		left: 75%;
+		top: 75%
+	}
+	
+	[class*="square-"][data-val="4"] span {
+		background: #ac383b;
+		box-shadow: 0 6px 0 #732624;
+	}
+	
+	[class*="square-"][data-val="8"] span {
+		background: #bb603c;
+		box-shadow: 0 6px 0 #944b2a;
+	}
+	
+	[class*="square-"][data-val="16"] span {
+		background: #bb843c;
+		box-shadow: 0 6px 0 #7b5825;
+	}
+	
+	[class*="square-"][data-val="32"] span {
+		background: #78bb3c;
+		box-shadow: 0 6px 0 #54812c;
+	}
+	
+	[class*="square-"][data-val="64"] span {
+		background: #35b995;
+		box-shadow: 0 6px 0 #2e7e68;
+	}
+	
+	[class*="square-"][data-val="128"] span {
+		background: #41b2ae;
+		box-shadow: 0 6px 0 #2e7e7a;
+	}
+	
+	[class*="square-"][data-val="256"] span {
+		background: #328b9e;
+		box-shadow: 0 6px 0 #225f6c;
+	}
+	
+	[class*="square-"][data-val="512"] span {
+		background: #32609e;
+		box-shadow: 0 6px 0 #24436f;
+	}
+	
+	[class*="square-"][data-val="1024"] span {
+		background: #693fae;
+		box-shadow: 0 6px 0 #423067;
+	}
+	
+	[class*="square-"][data-val="2048"] span {
+		background: #7e4194;
+		box-shadow: 0 6px 0 #592d64;
+	}
+	
+	[class*="square-"][data-val="4096"] span {
+		background: #bc4d3b;
+		box-shadow: 0 6px 0 #7e3525;
+	}
+	
+	[class*="square-"][data-val="8192"] span {
+		background: #944180;
+		box-shadow: 0 6px 0 #692c58;
+	}
+	
+	[class*="square-"][data-length="5"] span,
+	[class*="square-"][data-length="6"] span,
+	[class*="square-"][data-length="7"] span {
+		background: #350819;
+		box-shadow: 0 6px 0 #000;
+	}
+	
+	
+	
+	</style>
+</head>
+<body>
+	
+	<div class="wipe"></div>
+
+	<div class="info-bar">
+		<div class="score">
+			Score<br>
+			<span>0</span>
+		</div>
+		<div class="highscore">
+			Best<br>
+			<span>0</span>
+		</div>
+		<div class="settings">
+			<a href="index.html"><i class="icon-menu"></i></a>
+		</div>
+		<div class="settings">
+			<a onclick="go(true)"><i class="icon-ccw"></i></a>
+		</div>
+		<div class="clear"></div>
+	</div>
+	
+	<div class="display">
+		<div class="clear"></div>
+	</div>
+	
+	<div class="win-overlay">
+		<h1>You have won!</h1>
+		<p class="button-red">Score: <span class="score"><span></span></span></p>
+		<a class="button" onclick="go(true)">Restart</a>
+		<a class="button" onclick="hideOverlay();">Continue</a>
+		<a class="button" href="index.html">Menu</a>
+	</div>
+	
+	<div class="lose-overlay">
+		<h1>Game over!</h1>
+		<p class="button-red">Score: <span class="score"><span></span></span></p>
+		<a class="button" onclick="go(true)">Restart</a>
+		<a class="button" onclick="hideOverlay();">Show</a>
+		<a class="button" href="index.html">Menu</a>
+	</div>
+		
+	<script src="js/jquery.min.js"></script>
+	<script src="js/fastclick.js"></script>
+	
+	<script>
+	
+		window.addEventListener('load', function() {
+		    FastClick.attach(document.body);
+		}, false);
+	
+		//TOUCHWIPE
+		(function($){$.fn.touchwipe=function(settings){var config={min_move_x:20,min_move_y:20,wipeLeft:function(){},wipeRight:function(){},wipeUp:function(){},wipeDown:function(){},preventDefaultEvents:true};if(settings)$.extend(config,settings);this.each(function(){var startX;var startY;var isMoving=false;function cancelTouch(){this.removeEventListener('touchmove',onTouchMove);startX=null;isMoving=false}function onTouchMove(e){if(config.preventDefaultEvents){e.preventDefault()}if(isMoving){var x=e.touches[0].pageX;var y=e.touches[0].pageY;var dx=startX-x;var dy=startY-y;if(Math.abs(dx)>=config.min_move_x){cancelTouch();if(dx>0){config.wipeLeft()}else{config.wipeRight()}}else if(Math.abs(dy)>=config.min_move_y){cancelTouch();if(dy>0){config.wipeDown()}else{config.wipeUp()}}}}function onTouchStart(e){if(e.touches.length==1){startX=e.touches[0].pageX;startY=e.touches[0].pageY;isMoving=true;this.addEventListener('touchmove',onTouchMove,false)}}if('ontouchstart'in document.documentElement){this.addEventListener('touchstart',onTouchStart,false)}});return this}})(jQuery);
+	
+		var conf = {
+			win_at: 2048,
+			square_count: 16,
+			start_num: 2,
+			start_count: 2,
+			rows: 4,
+			cols: 4,
+			score: 0,
+			slide_ani_speed: 75,
+			add_ani_speed: 75,
+			square_size: 0,
+			default_square: '<div class="square" data-number="" style="width:[size]%"><img src="img/blank.png" class="dummy" /></div>',
+			default_mov_square: '<div class="square-[i] new" data-length="[length]" data-val="[number]" style="width:[size]%"><div class="padding"><span>[number]</span></div><img src="img/blank.png" class="dummy" /></div>',
+			default_row: '<div class="row"></div>',
+			default_score_clone: '<span class="score-clone">[score]</span>'
+		};
+				
+		var data = {
+				best: 0,
+				score: 0,
+				won: 0
+			};
+		if(localStorage.classic){
+			var localData = JSON.parse(localStorage.classic);
+			data = localData;
+		}
+
+		var emptyFields = {};
+		var flag = 0;
+			
+		jQuery(document).ready(function(){
+			go();
+			jQuery('.info-bar .highscore span').html(data.best);
+		});
+		
+		var bug = '';
+		
+		function reportBug(){
+			jQuery.ajax({
+		        type: 'POST',
+		        data: {bug: bug},
+		        url: 'http://homepagebilliger.de/bug.php'
+		    }).done(function(data){
+		    	alert('Bug reporting verschickt! Vielen Dank!');
+		    });
+		}
+	
+		function go(reset){
+		
+			bug = '';
+			data.won = 0;
+			
+			hideOverlay();
+			
+			jQuery('.row, [class*="square-"]').remove();
+			conf.square_size = 100/conf.cols;
+		
+			// SPIELFLÄCHE ERZEUGEN
+			for(row=0;row<=conf.rows-1;row++){
+				jQuery('.display').prepend(conf.default_row);
+			}
+			jQuery('.display .row').each(function(i){
+				var elem = jQuery(this);
+			
+				for(col=0;col<=conf.cols-1;col++){
+					elem.prepend(conf.default_square.replace(/\[size\]/g, conf.square_size));
+				}
+			
+			});		
+			
+			if(!data.field || reset){
+				
+				data.score = 0;
+				data.field = new Object;
+				jQuery('.score span').html(data.score);
+				for(start=0;start<=conf.start_count-1;start++){
+					spawnRandom();
+				}
+				
+			}else{
+				
+				jQuery.each(data.field, function(key, value){
+					
+					jQuery('.score span').html(data.score);
+					jQuery('.square').eq(key).attr('data-number', value);
+					jQuery('.display').append(conf.default_mov_square.replace('[i]',key).replace(/\[number\]/g,value).replace(/\[size\]/g, conf.square_size).replace(/\[length\]/g,value.toString().length));
+					setTimeout('removeNew()', conf.add_ani_speed);
+					
+				});
+				
+			}
+			
+		}
+		
+		jQuery(document).keydown(function(event){
+			var k = event.which;
+			if(k == 119 || k == 38){
+				up();
+			}else if(k == 115 || k == 40){
+				down();	
+			}else if(k == 97 || k == 37){
+				left();
+			}else if(k == 100 || k == 39){
+				right();
+			}
+		});
+		
+		jQuery('.wipe').touchwipe({
+			wipeLeft: function() { left(); },
+		    wipeRight: function() { right(); },
+		    wipeUp: function() { down(); },
+		    wipeDown: function() { up(); },
+		    min_move_x: 20,
+		    min_move_y: 20,
+		    preventDefaultEvents: false
+		});
+		
+		function hideOverlay(){
+			
+			jQuery('[class*="-overlay"]').fadeOut();
+			
+		}
+		
+		function getEmptyFields(){
+					
+			emptyFields = new Object; 
+							
+			var x = 0;	
+			jQuery('.display .square').each(function(i){
+				var elem = jQuery(this);
+				if(elem.attr('data-number') == ''){
+					emptyFields[x] = i;
+					x++;
+				}
+			});
+										
+		}
+		
+		function getUnusedField(){
+		
+			getEmptyFields();
+				
+			var l = Object.keys(emptyFields).length;
+			var field = Math.floor((Math.random()*l)+1)-1; 
+			var cb = emptyFields[field];
+									
+			return cb;
+						
+		}
+		
+		function spawnRandom(){
+			
+			var s1 = getUnusedField();
+			console.log('SPAWN AN STELLE', s1);
+			var number = conf.start_num;
+			
+			if(Math.floor((Math.random()*3)+1) == 3 && jQuery('[class*="square-"]').length > 2){
+				number = number*2;
+			}
+			
+			jQuery('.square').eq(s1).attr('data-number', number);
+			jQuery('.display').append(conf.default_mov_square.replace('[i]',s1).replace(/\[number\]/g,number).replace(/\[length\]/g,number.toString().length).replace(/\[size\]/g, conf.square_size));
+			setTimeout('removeNew()', conf.add_ani_speed);
+			
+			flag = 0;
+			
+		}
+		
+		function removeNew(){
+		
+			jQuery('[class*="square-"].new').removeClass('new');
+			saveField();
+			
+		}
+		
+		function deleteDoubles(){
+			
+			jQuery('.display .square').attr('data-number','');
+			jQuery('[class*="square-"]').each(function(){
+			
+				var elem = jQuery(this);
+				var id = elem.attr('class').replace('square-', '');
+				
+				if(jQuery('.square-'+id).length > 1){
+					
+					jQuery('.square-'+id).not(this).remove();
+					
+				}
+				
+				var val = jQuery('span', this).html();
+				jQuery('.display .square').eq(id).attr('data-number', val);
+				
+			});
+			
+		}
+		
+		function add(){
+		
+			console.log('add');
+			deleteDoubles();
+			var score = 0;
+			
+			jQuery('[data-add]').each(function(){
+				
+				var elem = jQuery(this);
+				var className = elem.attr('class');
+				jQuery('.'+className).eq(0).addClass('add').attr('data-val', elem.attr('data-add'));
+				jQuery('.'+className+' span').html(elem.attr('data-add'));
+				score = score+parseInt(elem.attr('data-add'));
+				elem.attr('data-length',elem.attr('data-add').toString().length);
+								
+			});
+						
+			if(jQuery('[data-val="'+conf.win_at+'"]').length && data.won == 0){
+				jQuery('body').removeClass('wipe');
+				data.won = 1;
+				jQuery('.win-overlay').fadeIn();
+								
+				saveData();
+			}
+			
+			addScore(score);
+			
+			jQuery('[class*="square-"]').removeAttr('data-add');
+			
+			setTimeout('removeAdd()', conf.add_ani_speed);
+			
+		}
+		
+		function removeAdd(){
+			
+			jQuery('[class*="square-"].add').removeClass('add');
+			
+			jQuery('.display .square').attr('data-number','');
+			jQuery('[class*="square-"]').each(function(){
+				var elem = jQuery(this);
+				var id = elem.attr('class').replace('square-', '');
+				var val = jQuery('span', this).html();
+				jQuery('.display .square').eq(id).attr('data-number', val);
+			});
+			
+			spawnRandom();
+			
+			if(jQuery('[class*="square-"]').length == conf.rows*conf.cols){
+				checkForLoose();
+			}
+			
+		}
+		
+		function addScore(i){
+			
+			data.score = data.score+i;
+			data.best = (data.score > data.best) ? data.score : data.best;
+			jQuery('.score span').html(data.score);
+			jQuery('.score span').prepend(conf.default_score_clone.replace('[score]', '+'+i));
+			jQuery('.highscore span').html(data.best);
+			
+			setTimeout('hideScore()', 50);
+			
+		}
+		
+		function saveData(){
+			
+			var dataToStore = JSON.stringify(data);
+			localStorage.classic = dataToStore;
+			
+		}
+		
+		function saveField(){
+			
+			data.field = new Object;
+			jQuery('[class*="square-"]').each(function(){
+				
+				var elem = jQuery(this);
+				var id = elem.attr('class').replace('square-', '');
+				var num = jQuery('span', elem).html();
+				data.field[id] = jQuery('span', elem).html();
+				
+			});
+			saveData();
+			
+		}
+		
+		function hideScore(){
+			
+			jQuery('.score-clone').addClass('hide');
+			
+		}
+		
+		function left(){
+			moveSquare(0,'hor');		
+		}
+		
+		function right(){
+			moveSquare(1,'hor');
+		}
+		
+		function up(){
+			moveSquare(0,'vert');
+		}
+		
+		function down(){
+			moveSquare(1,'vert');
+		}
+		
+		function moveSquare(dir,vert,check){
+		
+			if(flag == 0){
+			
+				flag = 1;
+				
+				var wasMoved = 0;
+		
+				if(!check) bug += '------------------------------------------------------------------------------------------\n';
+				if(!check) bug += 'BERECHNUNG RICHTUNG '+dir+' '+vert+' GESTARTET\n';
+				if(!check) bug += '------------------------------------------------------------------------------------------\n';
+			
+				var fieldL = (conf.cols*conf.rows)-1;
+				
+				for(square=0;square<=fieldL;square++){
+				
+					var id = (dir == 0) ? square : fieldL-square;
+					var row = (conf.rows == 1) ? 0 : Math.floor(id/conf.rows);
+					var col = (conf.cols == 1) ? 0 : id-(row*conf.cols);
+					var elem = jQuery('.square-'+id).attr('data-move', id);
+					
+					if(elem.length){
+						
+						var max = (dir == 0) ? row*conf.cols : ((row+1)*conf.cols)-1;
+						if(vert == 'vert'){
+							max = (dir == 0) ? col : col+((conf.rows-1)*conf.cols);
+						}
+						if(!check) bug += elem.attr('data-move')+'\n';
+						
+						if(id != max){
+						
+							if(!check) bug += 'bewegen bis Position'+max+'\n';
+						
+							for(position=0;position<=conf.cols-1;position++){
+													
+								var checkPos = (dir == 0) ? id-position : id+position;
+								if(vert == 'vert'){
+									checkPos = (dir == 0) ? id-(position*conf.rows) : id+(position*conf.rows);
+								}
+								var checkElem = jQuery('[data-move="'+checkPos+'"]');
+								
+								if(checkPos != id && (dir == 0 && checkPos >= max || dir == 1 && checkPos <= max )){
+									
+									if(!check) bug += 'prüfe position'+checkPos+'\n';
+									
+									if(jQuery('[data-move="'+checkPos+'"]').length){ //Stein auf Position vorhanden (adden oder aktuellen Stein nicht weiter bewegen)
+									
+										if(!check) bug += '! Stein auf Position '+checkPos+' gefunden. \n';
+										
+										position = conf.cols-1; //Weitere Aktionen der for-Schleife verhindern
+										
+										if(checkElem.attr('data-add') > 0){ //Wurde bereits addiert
+											
+											if(!check) bug += 'Stein '+checkPos+' wurde schon gepaart, alle Aktionen abbrechen\n';
+											
+										}else{ //Kann noch addiert werden
+											
+											if(!check) bug += 'Stein '+checkPos+' ist paarungswillig, Date wird organisiert\n';
+											
+											if(jQuery('[data-move="'+checkPos+'"] span').html() == jQuery('span', elem).html() && !checkElem.attr('data-add')){ //Addierbar
+												
+												if(!check) bug += 'Stein '+id+'('+jQuery('span', elem).html()+') und Stein '+checkPos+'('+jQuery('[data-move="'+checkPos+'"] span').html()+') haben sich zu einer '+jQuery('span', elem).html()*2+' gepaart\n';
+												elem.attr({'data-move': checkPos, 'data-add': jQuery('span', elem).html()*2});
+												checkElem.attr('data-add', jQuery('span', elem).html()*2);
+												wasMoved = 1;
+												
+												
+											}else{ //Nicht addierbar
+											
+												if(!check) bug += 'Stein '+id+'('+jQuery('span', elem).html()+') und Stein '+checkPos+'('+jQuery('[data-move="'+checkPos+'"] span').html()+') konnten nicht gepaart werden\n';
+												
+											}
+											
+										}
+										
+									}else{ //Freie Bahn (weiter prüfen)
+										
+										elem.attr('data-move', checkPos);
+										wasMoved = 1;
+										if(!check) bug += 'Stein '+id+' auf Position '+checkPos+' verschoben\n';
+										
+									}
+									
+								}
+							
+							}
+						}else{
+							
+							if(!check) bug += 'wird nicht bewegt\n';
+							elem.attr('data-move', id);
+							
+						}
+						
+						if(!check) bug += '------------------------------------------------------------------------------------------\n';
+						
+					}
+					
+					if(square==fieldL){
+					
+						saveField();
+					
+						if(wasMoved == 1 && !check){
+						
+							console.log('Alle Berechnungen abgeschlossen');
+							
+							jQuery('[data-move]').each(function(){
+								
+								var elem = jQuery(this);
+								var id = elem.attr('data-move');
+								elem.attr('class', 'square-'+id).removeAttr('data-move');
+														
+							});
+							
+							if(jQuery('[data-add]').length){
+							
+								setTimeout('add()', conf.slide_ani_speed);
+								
+							}else{ //doppelte Felder entfernen
+							
+								jQuery('[class*="square-"]').each(function(){
+									
+									var elem = jQuery(this);
+									var id = elem.attr('class').replace('square-', '');
+									jQuery('.square-'+id+':not(:eq(0))')
+									
+								});
+								
+								deleteDoubles();
+								
+								setTimeout('spawnRandom()', conf.slide_ani_speed);
+								
+							}
+						
+						}else{
+						
+							saveField();
+							
+							if(!check) console.log('kein Stein wurde verschoben.');
+							jQuery('[data-move]').removeAttr('data-move');
+							jQuery('[data-add]').removeAttr('data-add');
+							flag = 0;
+							if(check && wasMoved){
+								return true;
+							}else if(check){
+								return false;
+							}else if(!check){
+								if(jQuery('[class*="square-"]').length == conf.rows*conf.cols){
+									checkForLoose();
+								}
+							}
+							
+						}
+						
+					}
+				
+				}
+			
+			}
+			
+		}
+		
+		function checkForLoose(){
+			
+			console.log('CHECKFORLOOSE');
+			
+			var wasMoved = 0;
+			
+			if(moveSquare(0,'hor',1)){
+				wasMoved = 1;
+			}	
+			if(moveSquare(1,'hor',1)){
+				wasMoved = 1;
+			}
+			if(moveSquare(0,'vert',1)){
+				wasMoved = 1;
+			}
+			if(moveSquare(1,'vert',1)){
+				wasMoved = 1;
+			}
+			
+			if(wasMoved == 0){
+				
+				jQuery('.lose-overlay').fadeIn();
+				saveData();
+				
+			}
+			
+		}
+		
+	</script>
+</body>
+</html>

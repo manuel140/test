@@ -1,0 +1,112 @@
+{
+  "name": "2048",
+  "css_prefix_text": "icon-",
+  "css_use_suffix": false,
+  "hinting": true,
+  "units_per_em": 1000,
+  "ascent": 850,
+  "glyphs": [
+    {
+      "uid": "d02a803276d9e1f42b7393964aa22ce9",
+      "css": "heart",
+      "code": 59398,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "b392c847bf41826598f12c02be842253",
+      "css": "star",
+      "code": 59399,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "11d74f891bce30f1bdf73d3259d59ed5",
+      "css": "user",
+      "code": 59406,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "c55fdf978f617992b43ee7cbaa6ef87e",
+      "css": "menu",
+      "code": 59407,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "ce50292e85eb5d6ee3be61b32bf2bdf3",
+      "css": "ok",
+      "code": 59405,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "06301c50d89b5d3e651bd07ebd6d7de7",
+      "css": "cancel",
+      "code": 59393,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "a3d734a5b4bec33fc3aa459d82092b23",
+      "css": "help-circled",
+      "code": 59408,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "7336247ba3db350dec8d6c0a47cef966",
+      "css": "cog",
+      "code": 59392,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "d9be617b7f2fe7843118ca2d3a1b8cca",
+      "css": "down-open",
+      "code": 59397,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "b714be5a812a474811604f700dfc87ce",
+      "css": "left-open",
+      "code": 59395,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "37910a1398001a5ccb541cb2a253a2c7",
+      "css": "right-open",
+      "code": 59394,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "440e148d0e21100118eae7036bcd2067",
+      "css": "up-open",
+      "code": 59396,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "c74dc50bfc8aa68f0d23010ad8960cb2",
+      "css": "ccw",
+      "code": 59400,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "874694a9126e8193bca844356d1b6328",
+      "css": "at",
+      "code": 59404,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "ec3648a34c41b70671dc38dbb72deb04",
+      "css": "twitter",
+      "code": 59402,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "53d4dc777eeba379412efba3ee1cac9e",
+      "css": "facebook",
+      "code": 59401,
+      "src": "mfglabs"
+    },
+    {
+      "uid": "c896fd4e287aebcf79803e0ece001ec1",
+      "css": "gplus",
+      "code": 59403,
+      "src": "mfglabs"
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="format-detection" content="telephone=no" />
+	<title>2048more</title>
+	<link href="css/2048-icons.css" rel="stylesheet">
+	<script type="text/javascript" charset="utf-8" src="js/phonegap.js"></script>
+	<script type="text/javascript" src="js/socialshare.js"></script>
+	<style>
+	html {
+		width: 100%;
+		height: 100%;
+	}
+	body {
+		font-family: Arial, sans-serif;
+		text-align: center;
+		background: #F2CA80;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+		color: #fff
+	}
+	h1 {
+		text-shadow: 0px 0px 4px rgba(0,0,0,0.3);
+		text-transform: uppercase;
+		margin-top: 25px;
+		text-transform: none
+	}
+	*, *:before, *:after {
+	    -moz-box-sizing: border-box;
+	    -webkit-box-sizing: border-box;
+	    -ms-box-sizing: border-box;
+	    box-sizing: border-box;
+	    -webkit-touch-callout: none;
+		-webkit-user-select: none;
+		outline: none;
+		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	}
+	.clear { 
+		clear: both; 
+		font-size: 0.1px; 
+		height: 0.1px; 
+		line-height: 0.1px; 
+		padding: 0!important
+	}
+	
+	.buttons {
+		margin-top: 25px
+	}
+
+	.button {
+		background: #BF9D73;
+		color: #fff;
+		padding: 10px 15px;
+		font-weight: bold;
+		width: 90%;
+		display: block;
+		text-decoration: none;
+		border-radius: 6px;
+		box-shadow: 0px 6px 0px #907857;
+		font-size: 2em;
+		text-align: center;
+		text-transform: uppercase;
+		margin: 0 5% 25px;
+		position: relative;
+		top: 0;
+		text-shadow: 0px 0px 4px rgba(0,0,0,0.3);
+		transition: all .125s ease;
+		-moz-transition: all .125s ease;
+		-webkit-transition: all .125s ease;
+		-ms-transition: all .125s ease
+	}
+	
+	.button:hover {
+		position: relative;
+		top: 6px;
+		box-shadow: 0px 0px 0px black
+	}
+	
+	.button.no-hover:hover {
+		position: relative;
+		top: 0;
+		box-shadow: inherit
+	}
+	
+	.first-start {
+		display: none;
+		position: absolute;
+		width: 100%;
+		bottom: 0;
+		top: 0;
+		background: #F2CA80;
+		z-index: 999
+	}
+	
+	p {
+		text-shadow: 0px 0px 4px rgba(0,0,0,0.3);
+		margin-bottom: 0
+	}
+	
+	</style>
+</head>
+<body>
+	
+	<div class="first-start">
+		<h1>How to play</h1>
+		<div class="step1">
+			<p style="font-size: 1.5em; width: 90%; margin-left: 5%">#1 swipe, to move the squares</p>
+			<img src="img/step1.jpg" width="100%" />
+		</div>
+		<div class="step2">
+			<p style="font-size: 1.5em; width: 90%; margin-left: 5%">#2 swipe, to bring them together</p>
+			<img src="img/step2.jpg" width="100%" />
+		</div>
+		<div class="step3">
+			<p style="font-size: 1.5em; width: 90%; margin-left: 5%">#3 a new square appears</p>
+			<img src="img/step4.jpg" width="100%" />
+		</div>
+		<div class="step4">
+			<p style="font-size: 1.5em; width: 90%; margin-left: 5%">#4 try to get the 2048 square</p>
+			<img src="img/step3.jpg" width="100%" />
+			<a onclick="hideHowTo()" class="button">Start</a><br>
+		</div>
+		<div class="clear"></div>
+	</div>
+	
+	<h1 style="position: relative;">2048more <a onclick="howTo()" style="position: absolute; right: 5%; top: 0"><i class="icon-help-circled"></i></a></h1>
+
+	<div class="buttons">
+		
+		<a href="classic.html" class="button">Classic</a>
+	
+		<a href="easy.html" class="button">Easy</a>
+		
+		<a href="hard.html" class="button">Hard</a>
+		
+		<a onclick="window.plugins.socialsharing.shareViaFacebook('Play #2048more! http://bit.ly/2048more')" class="button no-hover" style="width: 42.5%; float: left; margin-right: 5%; background: #3B5998; box-shadow: 0px 6px 0px #2b3e6b"><i class="icon-facebook"></i></a>
+		
+		<a onclick="window.plugins.socialsharing.shareViaTwitter('Play #2048more! http://bit.ly/2048more')" class="button no-hover" style="width: 42.5%; float: left; margin-left: 0; background: #3B88C3; box-shadow: 0px 6px 0px #2d6089"><i class="icon-twitter"></i></a>
+		
+			
+	</div>
+	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/fastclick.js"></script>
+	
+	<script>
+		window.addEventListener('load', function() {
+		    FastClick.attach(document.body);   
+		    
+		    admob.createBannerView(
+			{
+				'publisherId': 'ca-app-pub-2413759496634061/2178911964',
+				'adSize': admob.AD_SIZE.BANNER
+			});
+			
+			admob.requestAd({
+				'isTesting': false
+			});	
+		    
+		}, false);
+		
+		jQuery(document).ready(function(){
+					
+			if(!localStorage.firstStart){
+				
+				jQuery('.first-start').fadeIn();
+				
+			}
+			
+		});
+		
+		function howTo(){
+			
+			jQuery('.first-start').fadeIn();
+			
+		}
+		
+		function hideHowTo(){
+			
+			jQuery('.first-start').fadeOut();
+			localStorage.firstStart = 1;
+			
+		}
+		
+	</script>
+</body>
+</html>

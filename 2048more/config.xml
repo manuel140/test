@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="de.manuel-hummel.2048more" version="1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>2048more</name>
+    <description>
+        Another 2048 puzzle game with 2 more levels and infinite mode.
+    </description>
+    <author email="2048more@manuel-hummel.de" href="http://manuel-hummel.de/2048more">
+        Manuel Hummel
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <preference name="fullscreen" value="true" />
+    <preference name="webviewbounce" value="false" />
+    <preference name="DisallowOverscroll" value="true" />
+</widget>
